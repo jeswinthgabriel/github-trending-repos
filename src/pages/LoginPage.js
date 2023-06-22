@@ -4,6 +4,7 @@ import { login } from '../features/authSlice'
 import { useNavigate } from "react-router-dom";
 import Form from 'react-bootstrap/Form';
 import { Container, Row, Col } from 'react-bootstrap';
+import Button from 'react-bootstrap/Button';
 const LoginPage = () => {
   const[password,setPassword]=useState('')
   const dispatch = useDispatch()
@@ -20,7 +21,7 @@ const LoginPage = () => {
     
 
     <>
-    <Container className="mt-5 h-100">
+    <Container className="mt-5 w-80">
 <Row className="d-flex h-100">
     <Col className="justify-content-center align-self-center h-100">
     <Form className=""  onSubmit={handleLogin}>
@@ -30,9 +31,13 @@ const LoginPage = () => {
         id="inputPassword5"
         aria-describedby="passwordHelpBlock"
       />
+      <Button variant="primary" type="submit">
+        Submit
+      </Button><br/>
       <Form.Text id="passwordHelpBlock" muted>
         Please provide a valid Personal Access Token for GitHub
       </Form.Text>
+      
       </Form></Col>
       </Row>
       </Container>

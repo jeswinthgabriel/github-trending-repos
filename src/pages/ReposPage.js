@@ -34,7 +34,7 @@ const ReposPage = () => {
   const [selectedLanguage, setSelectedLanguage] = useState("");
   const [languageInput, setLanguageInput] = useState();
   const [status, setStatus] = useState();
-  const [datefilter, setDateFilter] = useState('');
+  const [datefilter, setDateFilter] = useState({name:"",parameter:""});
   const navigate = useNavigate();
   var date = new Date(),
     y = date.getFullYear(),
@@ -46,11 +46,27 @@ var lastdayweek = new Date(date.setDate(date.getDate() - date.getDay()+6)).toISO
   const thisMonth = `-created:<=${firstDay} -created:>=${lastDay}`;
   const thisWeek = `-created:<=${firstdayweek} -created:>=${lastdayweek}`;
   const today = `-created:<=${new Date(new Date().setDate(new Date().getDate()-1)).toISOString().substring(0, 10)}`;
-  console.log(thisWeek);
+  const datefilters = [
+    {
+      name: "Today",
+      parameter: today,
+    },
+    {
+      name: "This week",
+      parameter: thisWeek,
+    },
+    {
+      name: "This month",
+      parameter: thisMonth,
+    },
+  ];
+
+  
+  
   useEffect(() => {
     const getRepositories = async () => {
       const response = await axios.get(
-        `https://api.github.com/search/repositories?q=created${datefilter}+language:${selectedLanguage}&sort=stars&order=desc`,
+        `https://api.github.com/search/repositories?q=created${datefilter.parameter && datefilter.parameter}+language:${selectedLanguage}&sort=stars&order=desc`,
         config
       );
       setStatus(response.status);
@@ -73,7 +89,7 @@ var lastdayweek = new Date(date.setDate(date.getDate() - date.getDay()+6)).toISO
     console.log(languages);
   }, []);
 
-  return repositories.length > 1 ? (
+  return (
     <>
       <Container fluid className="text-center bg-light border py-5">
         <h2>Trending</h2>
@@ -131,30 +147,28 @@ var lastdayweek = new Date(date.setDate(date.getDate() - date.getDay()+6)).toISO
                   <Dropdown.Toggle
                     variant="light"
                     id="dropdown"
-                  > Date Filter</Dropdown.Toggle>
+                  > {datefilter.name ? datefilter.name :"Date Filter"} </Dropdown.Toggle>
 
                   <Dropdown.Menu>
-                  <Dropdown.Item onClick={()=>setDateFilter(today)}>Today</Dropdown.Item>
-                  <Dropdown.Item onClick={()=>setDateFilter(thisWeek)}>This Week</Dropdown.Item>
-                  <Dropdown.Item onClick={()=>setDateFilter(thisMonth)}>This Month</Dropdown.Item>
+                    {datefilters.map(ele=><Dropdown.Item onClick={()=>setDateFilter(ele)}>{ele.name}</Dropdown.Item>)}
+                  
+    
                   </Dropdown.Menu>
                 </Dropdown>
               </Card.Header>
               <Card.Body>
-                {repositories.map((rep) => (
+                {repositories.length>1 ? repositories.map((rep) => (
                   <div key={rep.full_name} className="border-bottom text-start">
                     <Repositories data={rep} />
                   </div>
-                ))}
+                )):"No results found"}
               </Card.Body>
             </Card>
           </Col>
         </Row>
       </Container>
     </>
-  ) : (
-    "No Results found"
-  );
+  ) ;
 };
 
 export default ReposPage;
