@@ -7,7 +7,7 @@ const RepoName = () => {
  const [repoInfo,setRepoInfo] = useState({})
  useEffect (() => {
    const getRepoInfo = async ()=>{
-   const response= await axios.get(`https://api.github.com/repos/laravel/laravel`)
+   const response= await axios.get(`https://api.github.com/repos/${slug1}/${slug2}`)
    setRepoInfo(response.data)
   }
 
